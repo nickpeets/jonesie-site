@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jonesie</title>
+<!-- TODO(brand): no logo PNGs were supplied for this pass. When Rachel's logo files land,
+     replace the drawn heart <svg class="mark"> in the header and the SVG favicon below
+     with the PNGs (e.g. <img class="mark" src="logo.png" alt="jonesie">, <link rel="icon" href="favicon.png">). -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 86 C20 64 8 46 8 30 A20 20 0 0 1 50 22 A20 20 0 0 1 92 30 C92 46 80 64 50 86 Z' fill='none' stroke='%23474546' stroke-width='5'/%3E%3Ccircle cx='38' cy='40' r='4' fill='%23474546'/%3E%3Ccircle cx='62' cy='40' r='4' fill='%23474546'/%3E%3Cpath d='M40 52 Q50 60 60 52' fill='none' stroke='%23474546' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='30' cy='50' r='5' fill='%23E3A99F'/%3E%3Ccircle cx='70' cy='50' r='5' fill='%23E3A99F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://jones-revival.myshopify.com">
+<link rel="preconnect" href="https://cdn.shopify.com">
+<!-- Wordmark: Bodoni Moda (high-contrast Didone). Poiret One stays for section headings; Jost for everything else. -->
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Poiret+One&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ---- jonesie brand palette ---- */
+    --charcoal:#474546;        /* deep charcoal */
+    --charcoal-deep:#373536;   /* darker shade for headings */
+    --blush:#F7DAD5;           /* soft muted blush */
+    --blush-deep:#E3A99F;      /* deepened blush for accents/text contrast */
+    --light-gray:#D8D6D5;      /* light gray */
+    --mid-gray:#ABABAB;        /* mid gray */
+    /* ---- derived working tokens ---- */
+    --slate:#8f8d8d;
+    --slate-soft:var(--mid-gray);
+    --paper:#F6F4F3;
+    --paper-2:#ECE9E8;
+    --line:var(--light-gray);
+    --ink:#474546;
+    --wordmark:'Bodoni Moda',Georgia,'Times New Roman',serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Jost',sans-serif;
+    font-weight:300;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.65;
+    letter-spacing:.02em;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img,svg{max-width:100%}
+  h1,h2,h3,.display{font-family:'Poiret One',sans-serif;font-weight:400;letter-spacing:.08em}
+
+  /* ---------- deco hairlines ---------- */
+  .deco-rule{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    color:var(--slate);margin:0 auto;
+  }
+  .deco-rule::before,.deco-rule::after{
+    content:"";height:1px;width:42px;background:var(--slate-soft);
+  }
+  .deco-rule .dot{width:5px;height:5px;border:1px solid var(--slate);transform:rotate(45deg)}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(244,243,242,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{
+    max-width:1120px;margin:0 auto;padding:22px 32px;
+    display:flex;flex-direction:column;align-items:center;gap:18px;
+  }
+  .logo{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;text-decoration:none;color:var(--charcoal)}
+  .logo .mark{width:54px;height:54px;margin-bottom:4px}
+  .logo .name{font-family:var(--wordmark);font-weight:500;font-size:2.35rem;line-height:1;letter-spacing:.04em;color:var(--charcoal-deep)}
+  .logo .shopword{font-family:'Jost';font-weight:400;font-size:.66rem;letter-spacing:.5em;text-indent:.5em;color:var(--charcoal);text-transform:uppercase;margin-top:4px}
+  .logo .tag{font-size:.7rem;letter-spacing:.12em;color:var(--slate);margin-top:2px}
+
+  nav{display:flex;gap:34px;flex-wrap:wrap;justify-content:center}
+  nav a{
+    background:none;border:none;cursor:pointer;
+    font-family:'Jost';font-weight:400;font-size:.78rem;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--slate);
+    padding:4px 2px;position:relative;transition:color .3s;
+  }
+  nav a::after{
+    content:"";position:absolute;left:50%;bottom:-3px;width:0;height:1px;
+    background:var(--blush-deep);transition:all .3s;transform:translateX(-50%);
+  }
+  nav a:hover,nav a.active{color:var(--charcoal-deep)}
+  nav a:hover::after,nav a.active::after{width:100%}
+  nav a .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--blush);color:var(--charcoal-deep);font-size:.66rem;letter-spacing:0;text-align:center;line-height:18px;vertical-align:1px}
+  nav a .cnt:empty{display:none}
+
+  /* ---------- page system ---------- */
+  main{max-width:1120px;margin:0 auto;padding:0 32px}
+  .page{display:none;animation:fade .5s ease both;padding:64px 0 96px}
+  .page.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .ph{text-align:center;margin-bottom:14px}
+  .ph h1{font-size:2.6rem;color:var(--charcoal-deep)}
+  .ph .sub{font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;color:var(--slate);margin-top:8px}
+
+  /* ---------- character panel ---------- */
+  .charline{display:flex;justify-content:center;margin:30px 0 50px}
+  .charcard{
+    display:flex;align-items:center;gap:20px;
+    background:var(--paper-2);border:1px solid var(--line);
+    padding:18px 30px;border-radius:18px;max-width:560px;
+  }
+  .charcard svg{width:78px;height:78px;flex-shrink:0}
+  .charcard .ctxt{font-size:.92rem;color:var(--ink)}
+  .charcard .ctxt b{font-family:'Poiret One';font-weight:400;font-size:1.05rem;letter-spacing:.05em;color:var(--charcoal-deep);display:block;margin-bottom:2px}
+
+  /* ---------- hero ---------- */
+  .hero{text-align:center;padding:30px 0 10px}
+  .hero .big{font-family:var(--wordmark);font-weight:500;font-size:clamp(3.4rem,10vw,6.4rem);line-height:1;color:var(--charcoal-deep);letter-spacing:.02em}
+  .hero .shopword{font-family:'Jost';font-weight:400;font-size:.8rem;letter-spacing:.6em;text-indent:.6em;text-transform:uppercase;color:var(--charcoal);margin-top:10px}
+  .hero .lead{max-width:520px;margin:26px auto 0;color:var(--slate);font-size:1.02rem}
+  .hero-heart{width:120px;height:120px;margin:0 auto 8px;display:block}
+  .cta{
+    display:inline-block;margin-top:34px;cursor:pointer;text-decoration:none;
+    font-family:'Jost';font-weight:400;font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--charcoal-deep);background:none;border:1px solid var(--charcoal);
+    padding:14px 38px;border-radius:40px;transition:all .35s;
+  }
+  .cta:hover{background:var(--charcoal-deep);color:var(--paper);border-color:var(--charcoal-deep)}
+  .cta.sm{margin-top:0;padding:10px 22px;font-size:.7rem;letter-spacing:.2em}
+  .cta:disabled,.cta[disabled]{opacity:.45;cursor:not-allowed}
+  .cta:disabled:hover{background:none;color:var(--charcoal-deep);border-color:var(--charcoal)}
+
+  .feature-row{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:80px}
+  .feature{text-align:center;padding:14px}
+  .feature .fi{width:46px;height:46px;margin:0 auto 14px;color:var(--slate)}
+  .feature h3{font-size:1.2rem;color:var(--charcoal-deep);margin-bottom:8px}
+  .feature p{font-size:.9rem;color:var(--slate)}
+
+  /* ---------- shop toolbar ---------- */
+  .toolbar{
+    display:flex;flex-wrap:wrap;gap:12px 14px;align-items:center;justify-content:center;
+    margin:0 0 26px;
+  }
+  .toolbar .f{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .toolbar label{font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--slate)}
+  .toolbar select{
+    appearance:none;-webkit-appearance:none;
+    font-family:'Jost';font-weight:400;font-size:.8rem;letter-spacing:.06em;color:var(--charcoal-deep);
+    background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238f8d8d' stroke-width='1.3'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border:1px solid var(--line);border-radius:30px;padding:9px 32px 9px 16px;max-width:200px;cursor:pointer;
+  }
+  .toolbar select:focus{outline:none;border-color:var(--blush-deep)}
+  .toolbar .mix{align-self:flex-end}
+  .toolbar .clear{align-self:flex-end;background:none;border:none;cursor:pointer;font-family:'Jost';font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);padding:10px 4px;border-bottom:1px solid transparent}
+  .toolbar .clear:hover{color:var(--charcoal-deep);border-color:var(--blush-deep)}
+
+  /* ---------- shop grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:10px}
+  .item{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    overflow:hidden;transition:box-shadow .35s,transform .35s;
+    display:flex;flex-direction:column;
+  }
+  .item:hover{box-shadow:0 18px 40px -22px rgba(43,44,48,.35);transform:translateY(-4px)}
+  .gallery{position:relative;aspect-ratio:1/1;background:var(--paper-2)}
+  .track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .track::-webkit-scrollbar{display:none}
+  .slide{
+    min-width:100%;height:100%;scroll-snap-align:center;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Poiret One';color:var(--slate);font-size:1rem;letter-spacing:.2em;
+    background:linear-gradient(135deg,var(--paper-2),#e2e0de);
+  }
+  .slide:nth-child(even){background:linear-gradient(135deg,#e9e2e2,#ded6d6)}
+  .slide img{width:100%;height:100%;object-fit:cover;display:block}
+  .item.sold .slide img{filter:grayscale(.55) opacity(.75)}
+  .gnav{position:absolute;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;
+    background:rgba(255,255,255,.82);border:1px solid var(--line);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--charcoal);font-size:.8rem;
+    opacity:0;transition:opacity .3s;z-index:2}
+  .item:hover .gnav{opacity:1}
+  .gnav.prev{left:10px}.gnav.next{right:10px}
+  .dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2}
+  .dots i{width:5px;height:5px;border-radius:50%;background:rgba(43,44,48,.25);transition:all .3s}
+  .dots i.on{background:var(--blush-deep);width:14px;border-radius:3px}
+  .badge{position:absolute;top:12px;left:12px;z-index:3;font-family:'Jost';font-weight:400;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--charcoal-deep)}
+  .badge.sold{background:var(--charcoal-deep);color:var(--paper);border-color:var(--charcoal-deep)}
+  .badge.deal{left:auto;right:12px;background:var(--blush);border-color:var(--blush)}
+  .info{padding:18px 20px 22px;display:flex;flex-direction:column;flex:1}
+  .info .br{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--slate);margin-bottom:3px}
+  .info .nm{font-family:'Poiret One';font-size:1.12rem;letter-spacing:.04em;color:var(--charcoal-deep);line-height:1.3}
+  .info .pr{color:var(--blush-deep);font-weight:400;font-size:1rem;margin:5px 0 10px}
+  .info .pr s{color:var(--slate-soft);font-weight:300;margin-left:8px;font-size:.88rem}
+  .info .ds{font-size:.84rem;color:var(--slate);margin-bottom:10px}
+  .info .meas{font-size:.74rem;letter-spacing:.06em;color:var(--ink);border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+  .info .meas span{display:block;color:var(--slate);text-transform:uppercase;letter-spacing:.16em;font-size:.6rem;margin-bottom:3px}
+  .info .add{margin-top:14px;width:100%}
+  .shop-note{
+    background:var(--paper-2);border:1px dashed var(--slate-soft);border-radius:14px;
+    padding:18px 24px;margin-bottom:34px;font-size:.82rem;color:var(--slate);text-align:center;
+  }
+  .shop-note b{color:var(--charcoal-deep);font-family:'Poiret One';letter-spacing:.04em}
+  .shop-note.quiet{border-style:solid;border-color:transparent;background:none;padding:6px 0 0;margin-bottom:18px}
+  .shop-note .retry{margin-top:12px}
+  .more{display:flex;justify-content:center;margin-top:40px}
+  .sentinel{height:1px}
+
+  /* ---------- cart drawer ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(55,53,54,.35);opacity:0;pointer-events:none;transition:opacity .3s;z-index:90}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .drawer{
+    position:fixed;top:0;right:0;height:100%;width:min(92vw,400px);background:var(--paper);
+    border-left:1px solid var(--line);z-index:100;display:flex;flex-direction:column;
+    transform:translateX(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
+  }
+  .drawer.on{transform:none}
+  .drawer .dh{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid var(--line)}
+  .drawer .dh h2{font-size:1.5rem;color:var(--charcoal-deep)}
+  .drawer .x{background:none;border:none;cursor:pointer;font-family:'Jost';font-weight:300;font-size:1.6rem;color:var(--slate);line-height:1}
+  .drawer .lines{flex:1;overflow-y:auto;padding:14px 24px}
+  .line{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .line img{width:64px;height:64px;object-fit:cover;border-radius:10px;background:var(--paper-2);flex-shrink:0}
+  .line .ln{flex:1;min-width:0}
+  .line .lt{font-family:'Poiret One';font-size:1rem;color:var(--charcoal-deep);line-height:1.3}
+  .line .lp{color:var(--blush-deep);font-size:.9rem;margin-top:2px}
+  .line .lv{font-size:.72rem;color:var(--slate);letter-spacing:.06em}
+  .line .rm{background:none;border:none;cursor:pointer;font-family:'Jost';font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);padding:4px 0;margin-top:6px;border-bottom:1px solid transparent}
+  .line .rm:hover{color:var(--charcoal-deep);border-color:var(--blush-deep)}
+  .drawer .df{padding:20px 24px 26px;border-top:1px solid var(--line);background:var(--paper-2)}
+  .drawer .sub{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:6px}
+  .drawer .sub b{font-weight:400;color:var(--charcoal-deep)}
+  .drawer .fine{font-size:.72rem;color:var(--slate);margin-bottom:14px}
+  .drawer .cta{width:100%;margin-top:0}
+  .drawer .empty{text-align:center;color:var(--slate);padding:50px 10px;font-size:.92rem}
+  .drawer .empty svg{width:64px;height:64px;margin:0 auto 14px;display:block}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--charcoal-deep);color:var(--paper);font-size:.78rem;letter-spacing:.12em;padding:12px 22px;border-radius:30px;opacity:0;transition:all .3s;z-index:80;pointer-events:none;max-width:90vw;text-align:center}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+
+  /* ---------- about ---------- */
+  .prose{max-width:680px;margin:0 auto}
+  .prose p{margin-bottom:20px;font-size:1.02rem;color:var(--ink)}
+  .prose .first{font-size:1.18rem;color:var(--charcoal-deep)}
+
+  /* ---------- contact ---------- */
+  .contact-wrap{max-width:560px;margin:0 auto}
+  .field{margin-bottom:20px}
+  .field label{display:block;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--slate);margin-bottom:7px}
+  .field input,.field textarea{
+    width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:12px;
+    background:#fff;font-family:'Jost';font-weight:300;font-size:.95rem;color:var(--ink);
+  }
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--blush-deep)}
+  .contact-meta{text-align:center;margin-top:46px;color:var(--slate);font-size:.9rem;line-height:2}
+  .contact-meta a{color:var(--charcoal-deep);text-decoration:none;border-bottom:1px solid var(--blush-deep)}
+
+  /* ---------- blog ---------- */
+  .posts{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+  .post{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 34px}
+  .post .date{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--blush-deep);margin-bottom:8px}
+  .post h3{font-size:1.5rem;color:var(--charcoal-deep);margin-bottom:12px}
+  .post p{color:var(--slate);font-size:.96rem}
+
+  /* ---------- faq ---------- */
+  .faqs{max-width:720px;margin:0 auto}
+  .faq{border-bottom:1px solid var(--line)}
+  .faq button{
+    width:100%;text-align:left;background:none;border:none;cursor:pointer;
+    padding:22px 4px;display:flex;justify-content:space-between;align-items:center;gap:20px;
+    font-family:'Poiret One';font-size:1.18rem;letter-spacing:.04em;color:var(--charcoal-deep);
+  }
+  .faq .plus{color:var(--blush-deep);font-size:1.4rem;font-family:'Jost';font-weight:300;transition:transform .3s}
+  .faq.open .plus{transform:rotate(45deg)}
+  .faq .ans{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease;color:var(--slate);font-size:.95rem}
+  .faq.open .ans{max-height:240px;padding-bottom:22px}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);margin-top:40px;background:var(--paper-2)}
+  .foot{max-width:1120px;margin:0 auto;padding:44px 32px;display:flex;flex-direction:column;align-items:center;gap:16px}
+  .foot .mk{width:38px;height:38px}
+  .foot .links{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+  .foot .links button{background:none;border:none;cursor:pointer;font-family:'Jost';font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--slate)}
+  .foot .links button:hover{color:var(--charcoal-deep)}
+  .foot .cr{font-size:.68rem;letter-spacing:.2em;color:var(--slate-soft);text-transform:uppercase}
+
+  @media(max-width:860px){
+    .feature-row,.grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:600px){
+    .bar{padding:18px}
+    nav{gap:18px}
+    .feature-row,.grid{grid-template-columns:1fr}
+    .charcard{flex-direction:column;text-align:center;padding:22px}
+    main{padding:0 20px}
+    .toolbar{justify-content:stretch}
+    .toolbar .f{flex:1 1 calc(50% - 7px)}
+    .toolbar select{max-width:none;width:100%}
+    .toolbar .mix,.toolbar .clear{flex:1 1 100%;text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="bar">
+    <a class="logo" onclick="go('home')">
+      <!-- heart mark in logo (TODO(brand): swap for logo PNG when supplied) -->
+      <svg class="mark" viewBox="0 0 100 100" aria-label="jonesie heart">
+        <path d="M50 86 C20 64 8 46 8 30 A20 20 0 0 1 50 22 A20 20 0 0 1 92 30 C92 46 80 64 50 86 Z"
+              fill="none" stroke="#474546" stroke-width="3"/>
+        <circle cx="38" cy="40" r="3.2" fill="#474546"/>
+        <circle cx="62" cy="40" r="3.2" fill="#474546"/>
+        <path d="M40 52 Q50 60 60 52" fill="none" stroke="#474546" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="30" cy="50" r="4" fill="#E3A99F"/>
+        <circle cx="70" cy="50" r="4" fill="#E3A99F"/>
+      </svg>
+      <span class="name">jonesie</span>
+      <span class="shopword">Shop</span>
+      <span class="tag">Quality, service &amp; care</span>
+    </a>
+    <nav id="nav">
+      <a onclick="go('home')" data-p="home">Home</a>
+      <a onclick="go('shop')" data-p="shop">Shop</a>
+      <a onclick="go('about')" data-p="about">About</a>
+      <a onclick="go('blog')" data-p="blog">Journal</a>
+      <a onclick="go('faq')" data-p="faq">FAQ</a>
+      <a onclick="go('contact')" data-p="contact">Contact</a>
+      <a onclick="openCart()" data-p="cart">Cart<span class="cnt" id="cartCount"></span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page show" id="home">
+  <div class="hero">
+    <!-- waving heart -->
+    <svg class="hero-heart" viewBox="0 0 100 100">
+      <path d="M50 86 C20 64 8 46 8 30 A20 20 0 0 1 50 22 A20 20 0 0 1 92 30 C92 46 80 64 50 86 Z" fill="none" stroke="#474546" stroke-width="2.6"/>
+      <circle cx="38" cy="40" r="3" fill="#474546"/><circle cx="62" cy="40" r="3" fill="#474546"/>
+      <path d="M40 52 Q50 60 60 52" fill="none" stroke="#474546" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="29" cy="50" r="3.6" fill="#E3A99F"/><circle cx="71" cy="50" r="3.6" fill="#E3A99F"/>
+      <!-- little waving hand -->
+      <path d="M88 18 q6 -6 10 -2" fill="none" stroke="#8f8d8d" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+    <div class="big">jonesie</div>
+    <div class="shopword">Shop</div>
+    <div class="deco-rule" style="margin-top:14px"><span class="dot"></span></div>
+    <p class="lead">A small, carefully kept shop of vintage finds and quiet treasures. Each piece chosen by hand, photographed honestly, and sent off with a little heart.</p>
+    <button class="cta" onclick="go('shop')">Enter the Shop</button>
+  </div>
+
+  <div class="feature-row">
+    <div class="feature">
+      <svg class="fi" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="9" y="9" width="30" height="30" rx="3"/><path d="M9 18h30M18 9v30"/></svg>
+      <h3>Hand-Picked</h3>
+      <p>Every item is sourced, inspected, and listed personally. No filler, no fast flips.</p>
+    </div>
+    <div class="feature">
+      <svg class="fi" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="24" cy="24" r="15"/><path d="M24 14v10l7 4"/></svg>
+      <h3>Honest Detail</h3>
+      <p>Measurements, condition notes, and eight photos so you see exactly what arrives.</p>
+    </div>
+    <div class="feature">
+      <svg class="fi" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M10 18l14-7 14 7v12l-14 7-14-7z"/><path d="M10 18l14 7 14-7M24 25v12"/></svg>
+      <h3>Wrapped with Care</h3>
+      <p>Packed tidy and shipped quick, every order tucked in with a thank-you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOP ============ -->
+<section class="page" id="shop">
+  <div class="ph"><h1>The Shop</h1><div class="sub">browse the collection</div></div>
+
+  <div class="charline">
+    <div class="charcard">
+      <!-- heart holding a tag -->
+      <svg viewBox="0 0 100 100">
+        <path d="M50 80 C24 61 14 46 14 32 A17 17 0 0 1 50 25 A17 17 0 0 1 86 32 C86 46 76 61 50 80 Z" fill="none" stroke="#474546" stroke-width="2.6"/>
+        <circle cx="40" cy="41" r="2.6" fill="#474546"/><circle cx="60" cy="41" r="2.6" fill="#474546"/>
+        <path d="M42 51 Q50 57 58 51" fill="none" stroke="#474546" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="32" cy="49" r="3.2" fill="#E3A99F"/><circle cx="68" cy="49" r="3.2" fill="#E3A99F"/>
+        <rect x="70" y="58" width="20" height="13" rx="2" transform="rotate(18 80 64)" fill="none" stroke="#8f8d8d" stroke-width="2"/>
+        <circle cx="74" cy="61" r="1.6" fill="#8f8d8d"/>
+      </svg>
+      <div class="ctxt"><b>Hello, I'm jonesie!</b>Have a look around — tap any photo to scroll through all the angles. Found something? It's just a click away.</div>
+    </div>
+  </div>
+
+  <!-- filters + sort (built from live data) -->
+  <div class="toolbar" id="toolbar">
+    <div class="f"><label for="fCat">Category</label><select id="fCat"><option value="">All</option></select></div>
+    <div class="f"><label for="fBrand">Brand</label><select id="fBrand"><option value="">All</option></select></div>
+    <div class="f"><label for="fSize">Size</label><select id="fSize"><option value="">All</option></select></div>
+    <div class="f"><label for="fSort">Sort</label>
+      <select id="fSort">
+        <option value="featured">Featured</option>
+        <option value="new">Just In</option>
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+        <option value="deals">Best Deals</option>
+      </select>
+    </div>
+    <button class="clear" onclick="clearFilters()">Clear</button>
+    <a class="cta sm mix" href="https://nickpeets.github.io/jonsie/" target="_blank" rel="noopener">Mix &amp; match</a>
+  </div>
+
+  <!-- status: loading / empty / error / count -->
+  <div class="shop-note" id="shopNote"><b>One moment.</b> &nbsp;Loading the closet…</div>
+
+  <div class="grid" id="shopGrid"></div>
+  <div class="more" id="moreWrap" hidden><button class="cta sm" onclick="renderMore()">Show more</button></div>
+  <div class="sentinel" id="sentinel"></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="page" id="about">
+  <div class="ph"><h1>About Us</h1><div class="sub">the story behind the shop</div></div>
+  <div class="charline">
+    <div class="charcard">
+      <!-- heart reading a book -->
+      <svg viewBox="0 0 100 100">
+        <path d="M50 80 C24 61 14 46 14 32 A17 17 0 0 1 50 25 A17 17 0 0 1 86 32 C86 46 76 61 50 80 Z" fill="none" stroke="#474546" stroke-width="2.6"/>
+        <circle cx="41" cy="40" r="2.6" fill="#474546"/><circle cx="59" cy="40" r="2.6" fill="#474546"/>
+        <path d="M43 50 Q50 55 57 50" fill="none" stroke="#474546" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="33" cy="48" r="3.2" fill="#E3A99F"/><circle cx="67" cy="48" r="3.2" fill="#E3A99F"/>
+        <path d="M34 68 q16 -8 32 0 M50 60 v8" fill="none" stroke="#8f8d8d" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div class="ctxt"><b>A little about me</b>I'm the heart of jonesie — here's the story of how the shop came to be.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p class="first">jonesie started the way the best small things do — quietly, and out of love for the hunt.</p>
+    <p>What began as weekends spent digging through estate sales and forgotten corners turned into a small, deliberate shop built on a simple idea: that a good object deserves a second life and an honest description. Every piece here was found, cleaned, photographed, and written up by hand.</p>
+    <p>We're not interested in moving fast or selling everything. We're interested in the right piece finding the right person — and in being straight with you about condition, measurements, and what you're actually getting. Eight photos. Real notes. No surprises.</p>
+    <p>Thank you for being here. Wander a while — jonesie's glad to have you.</p>
+  </div>
+</section>
+
+<!-- ============ BLOG / JOURNAL ============ -->
+<section class="page" id="blog">
+  <div class="ph"><h1>The Journal</h1><div class="sub">updates & finds</div></div>
+  <div class="charline">
+    <div class="charcard">
+      <!-- heart with a pencil -->
+      <svg viewBox="0 0 100 100">
+        <path d="M50 80 C24 61 14 46 14 32 A17 17 0 0 1 50 25 A17 17 0 0 1 86 32 C86 46 76 61 50 80 Z" fill="none" stroke="#474546" stroke-width="2.6"/>
+        <circle cx="41" cy="40" r="2.6" fill="#474546"/><circle cx="59" cy="40" r="2.6" fill="#474546"/>
+        <path d="M43 50 Q50 55 57 50" fill="none" stroke="#474546" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="33" cy="48" r="3.2" fill="#E3A99F"/><circle cx="67" cy="48" r="3.2" fill="#E3A99F"/>
+        <path d="M64 66 l16 -16 6 6 -16 16 z" fill="none" stroke="#8f8d8d" stroke-width="2"/>
+      </svg>
+      <div class="ctxt"><b>jonesie's notebook</b>Shop news, fresh drops, and the occasional behind-the-scenes from the sourcing trips.</div>
+    </div>
+  </div>
+  <div class="posts">
+    <article class="post"><div class="date">Coming Soon</div><h3>New Arrivals This Week</h3><p>A fresh batch of finds just hit the shop. This is a placeholder post — replace it with your real updates, drop announcements, or stories from the road.</p></article>
+    <article class="post"><div class="date">Coming Soon</div><h3>Behind the Sourcing</h3><p>Where the pieces come from and how they're chosen. Use the Journal for anything you'd post regularly — restocks, sales, or notes to your customers.</p></article>
+    <article class="post"><div class="date">Coming Soon</div><h3>Welcome to jonesie</h3><p>The very first note. New posts stack here in a clean scrolling feed, newest on top.</p></article>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="page" id="faq">
+  <div class="ph"><h1>FAQ</h1><div class="sub">good things to know</div></div>
+  <div class="charline">
+    <div class="charcard">
+      <!-- heart holding a package -->
+      <svg viewBox="0 0 100 100">
+        <path d="M50 78 C26 60 16 46 16 33 A16 16 0 0 1 50 27 A16 16 0 0 1 84 33 C84 46 74 60 50 78 Z" fill="none" stroke="#474546" stroke-width="2.6"/>
+        <circle cx="42" cy="40" r="2.5" fill="#474546"/><circle cx="58" cy="40" r="2.5" fill="#474546"/>
+        <path d="M44 49 Q50 54 56 49" fill="none" stroke="#474546" stroke-width="2.1" stroke-linecap="round"/>
+        <circle cx="35" cy="47" r="3" fill="#E3A99F"/><circle cx="65" cy="47" r="3" fill="#E3A99F"/>
+        <rect x="58" y="56" width="22" height="20" rx="2" fill="none" stroke="#8f8d8d" stroke-width="2"/>
+        <path d="M58 64h22M69 56v20" stroke="#8f8d8d" stroke-width="2"/>
+      </svg>
+      <div class="ctxt"><b>Got a package question?</b>jonesie's got the answers — shipping, returns, and the everyday details below.</div>
+    </div>
+  </div>
+  <div class="faqs" id="faqList"></div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="page" id="contact">
+  <div class="ph"><h1>Contact</h1><div class="sub">say hello</div></div>
+  <div class="charline">
+    <div class="charcard">
+      <!-- heart with envelope -->
+      <svg viewBox="0 0 100 100">
+        <path d="M50 80 C24 61 14 46 14 32 A17 17 0 0 1 50 25 A17 17 0 0 1 86 32 C86 46 76 61 50 80 Z" fill="none" stroke="#474546" stroke-width="2.6"/>
+        <circle cx="41" cy="40" r="2.6" fill="#474546"/><circle cx="59" cy="40" r="2.6" fill="#474546"/>
+        <path d="M43 50 Q50 55 57 50" fill="none" stroke="#474546" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="33" cy="48" r="3.2" fill="#E3A99F"/><circle cx="67" cy="48" r="3.2" fill="#E3A99F"/>
+        <rect x="60" y="58" width="22" height="15" rx="2" fill="none" stroke="#8f8d8d" stroke-width="2"/>
+        <path d="M60 60l11 7 11-7" fill="none" stroke="#8f8d8d" stroke-width="2"/>
+      </svg>
+      <div class="ctxt"><b>Drop a line</b>Questions about a piece, a custom request, or just want to chat? jonesie reads every message.</div>
+    </div>
+  </div>
+  <div class="contact-wrap">
+    <!-- TODO(Nick): create a Formspree form at https://formspree.io and replace FORM_ID below with the real id (looks like "xabcdefg"). -->
+    <form action="https://formspree.io/f/FORM_ID" method="POST">
+      <div class="field"><label for="cName">Your Name</label><input id="cName" type="text" name="name" placeholder="First & last" required></div>
+      <div class="field"><label for="cEmail">Email</label><input id="cEmail" type="email" name="email" placeholder="you@email.com" required></div>
+      <div class="field"><label for="cMsg">Message</label><textarea id="cMsg" rows="5" name="message" placeholder="What can we help with?" required></textarea></div>
+      <input type="hidden" name="_subject" value="New message from jonesie shop">
+      <button class="cta" style="width:100%" type="submit">Send Message</button>
+    </form>
+    <div class="contact-meta">
+      <div>Email · <a href="mailto:hello@jonesie.shop">hello@jonesie.shop</a></div>
+      <div>Instagram · <a href="#">@shopjonesie</a></div>
+      <div>Shop hours · listings updated weekly</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ CART DRAWER ============ -->
+<div class="scrim" id="scrim" onclick="closeCart()"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart" aria-hidden="true">
+  <div class="dh"><h2>Your Cart</h2><button class="x" onclick="closeCart()" aria-label="Close cart">×</button></div>
+  <div class="lines" id="cartLines"></div>
+  <div class="df">
+    <div class="sub"><span>Subtotal</span><b id="cartSubtotal">$0</b></div>
+    <div class="fine">Shipping &amp; taxes calculated at checkout.</div>
+    <button class="cta" id="checkoutBtn" onclick="checkout()" disabled>Checkout</button>
+  </div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot">
+    <svg class="mk" viewBox="0 0 100 100"><path d="M50 86 C20 64 8 46 8 30 A20 20 0 0 1 50 22 A20 20 0 0 1 92 30 C92 46 80 64 50 86 Z" fill="none" stroke="#8f8d8d" stroke-width="3"/><circle cx="38" cy="40" r="3" fill="#8f8d8d"/><circle cx="62" cy="40" r="3" fill="#8f8d8d"/><path d="M40 52 Q50 60 60 52" fill="none" stroke="#8f8d8d" stroke-width="2.6" stroke-linecap="round"/></svg>
+    <div class="links">
+      <button onclick="go('shop')">Shop</button>
+      <button onclick="go('about')">About</button>
+      <button onclick="go('blog')">Journal</button>
+      <button onclick="go('faq')">FAQ</button>
+      <button onclick="go('contact')">Contact</button>
+    </div>
+    <div class="cr">© <span id="yr"></span> jonesie · Made with a little heart</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* ---- routing ---- */
+  function go(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+    document.getElementById(id).classList.add('show');
+    document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active', a.dataset.p===id));
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(id==='shop' && !shopState.loaded && !shopState.loading) loadShop();
+  }
+
+  /* =====================================================================
+     SHOPIFY STOREFRONT API (public token — safe in client code)
+     Catalog, cart and checkout all run through Shopify; this file is the
+     only front end. No Admin API, no backend, no build step.
+     ===================================================================== */
+  const SF = {
+    domain:  'jones-revival.myshopify.com',
+    token:   'a71fb2513baa9b84db689d942d9d1339',
+    version: '2025-10'
+  };
+  async function gql(query, variables){
+    const r = await fetch(`https://${SF.domain}/api/${SF.version}/graphql.json`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Shopify-Storefront-Access-Token':SF.token},
+      body:JSON.stringify({query, variables})
+    });
+    if(!r.ok) throw new Error('Storefront API HTTP '+r.status);
+    const d = await r.json();
+    if(d.errors) throw new Error(d.errors.map(e=>e.message).join('; '));
+    return d.data;
+  }
+  const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money = (amt, cc) => {
+    const n = Number(amt||0);
+    try{ return new Intl.NumberFormat('en-US',{style:'currency',currency:cc||'USD',minimumFractionDigits: n%1?2:0, maximumFractionDigits:2}).format(n); }
+    catch(e){ return '$'+(n%1?n.toFixed(2):n.toFixed(0)); }
+  };
+
+  /* ---- size parsing ----
+     Order: variant option "Size" → shopify.size metafield → end-of-title parse.
+     Title parse is END-OF-TITLE ONLY (never mid-title: "40 M Rust Plaid" is a chest size). */
+  const SZ_TOKEN = '(?:xxs|xs|s|m|l|xl|xxl|xxxl|[2-6]xl|[0-4]x|os|osfm|\\d{1,2}p?)';
+  const SZ_WORD  = '(?:x-?small|small|medium|large|x-?large|xx-?large|xxx-?large)';
+  const SZ_RES = [
+    new RegExp('\\s((?:petite|plus)\\s(?:'+SZ_TOKEN+'|'+SZ_WORD+'))$','i'), // R1: Petite <size> | Plus <size>  (checked first so "Petite 10" keeps its prefix)
+    new RegExp('\\s(?:size|sz)\\s?(\\d{1,2}p?)$','i'),                      // R1: Size <n> | Sz <n>
+    new RegExp('\\s\\(('+SZ_TOKEN+'|'+SZ_WORD+')\\)$','i'),                 // R1: (<size>)
+    new RegExp('\\s('+SZ_WORD+')$','i'),                                    // R1: Small|Medium|Large|X-Large|XX-Large
+    new RegExp('\\s('+SZ_TOKEN+')$','i')                                    // original strict parse (letters / numerics)
+  ];
+  const SZ_MAP = {'xsmall':'XS','x-small':'XS','small':'S','medium':'M','large':'L','xlarge':'XL','x-large':'XL','xxlarge':'XXL','xx-large':'XXL','xxxlarge':'XXXL','xxx-large':'XXXL'};
+  function normSize(raw){
+    let s = String(raw).trim();
+    const pre = s.match(/^(petite|plus)\s+(.+)$/i);
+    if(pre){ return pre[1][0].toUpperCase()+pre[1].slice(1).toLowerCase()+' '+normSize(pre[2]); }
+    const k = s.toLowerCase();
+    return SZ_MAP[k] || s.toUpperCase();
+  }
+  function parseSize(p){
+    const v = (p.variants.nodes||[])[0];
+    const opt = v && (v.selectedOptions||[]).find(o=>/^size$/i.test(o.name));
+    if(opt && opt.value && opt.value!=='Default Title') return normSize(opt.value);
+    if(p.sizeMeta && p.sizeMeta.value && !/^\[/.test(p.sizeMeta.value)) return normSize(p.sizeMeta.value);
+    const t = (p.title||'').trim();
+    for(const re of SZ_RES){ const m = t.match(re); if(m) return normSize(m[1]); }
+    return '';
+  }
+  const SZ_ORDER = ['XXS','XS','S','M','L','XL','XXL','XXXL','2XL','3XL','4XL','5XL','6XL','OS','OSFM'];
+  function sizeRank(s){
+    const base = s.replace(/^(Petite|Plus)\s+/,'');
+    const prefix = /^Petite/.test(s)?1000:/^Plus/.test(s)?2000:0;
+    const i = SZ_ORDER.indexOf(base);
+    if(i>=0) return prefix+i;
+    const n = parseFloat(base);
+    if(!isNaN(n)) return prefix+100+n+(/P$/i.test(base)?.5:0);
+    return prefix+900;
+  }
+
+  /* ---- catalog ---- */
+  const PRODUCTS_Q = `query Products($cursor:String){
+    products(first:250, after:$cursor){
+      pageInfo{hasNextPage endCursor}
+      nodes{
+        id handle title vendor description availableForSale createdAt
+        category{name}
+        sizeMeta: metafield(namespace:"shopify", key:"size"){value}
+        images(first:8){nodes{url(transform:{maxWidth:900,maxHeight:900}) altText}}
+        variants(first:10){nodes{id availableForSale price{amount currencyCode} compareAtPrice{amount currencyCode} selectedOptions{name value}}}
+      }
+    }
+  }`;
+  const shopState = {loaded:false, loading:false, all:[], view:[], shown:0, PAGE:24};
+
+  function disc(p){ return (p.compareAt && p.compareAt>p.price) ? (p.compareAt-p.price)/p.compareAt : 0; }
+
+  function shape(n, idx){
+    const vars = n.variants.nodes||[];
+    const v = vars.find(x=>x.availableForSale) || vars[0] || {};
+    const price = Number(v.price?v.price.amount:0);
+    const compareAt = v.compareAtPrice ? Number(v.compareAtPrice.amount) : 0;
+    return {
+      id:n.id, handle:n.handle, title:n.title, vendor:n.vendor||'', idx,
+      desc:(n.description||'').replace(/\s+/g,' ').trim(),
+      images:(n.images.nodes||[]).map(i=>({url:i.url, alt:i.altText||n.title})),
+      category:(n.category&&n.category.name)||'Other',
+      size:parseSize(n),
+      variantId:v.id||null,
+      currency:(v.price&&v.price.currencyCode)||'USD',
+      price, compareAt,
+      sold:!n.availableForSale,
+      created:Date.parse(n.createdAt)||0
+    };
+  }
+
+  async function loadShop(){
+    shopState.loading = true;
+    setNote('<b>One moment.</b> &nbsp;Loading the closet…');
+    try{
+      let cursor=null, out=[];
+      do{
+        const d = await gql(PRODUCTS_Q,{cursor});
+        out.push(...d.products.nodes);
+        cursor = d.products.pageInfo.hasNextPage ? d.products.pageInfo.endCursor : null;
+      }while(cursor);
+      shopState.all = out.map(shape);
+      shopState.loaded = true;
+      buildFilters();
+      applyFilters();
+    }catch(err){
+      console.error('[jonesie] shop load failed', err);
+      setNote('<b>Hmm.</b> &nbsp;The shop couldn\'t load right now. '+esc(err.message)+'<br><button class="cta sm retry" onclick="loadShop()">Try again</button>');
+    }finally{ shopState.loading = false; }
+  }
+
+  function setNote(html, quiet){
+    const n = document.getElementById('shopNote');
+    n.innerHTML = html; n.classList.toggle('quiet', !!quiet); n.hidden = false;
+  }
+
+  function fillSelect(id, values, label){
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All</option>' + values.map(v=>`<option value="${esc(v.k)}">${esc(v.k)} (${v.n})</option>`).join('');
+    if([...sel.options].some(o=>o.value===cur)) sel.value = cur;
+  }
+  function tally(arr, key){
+    const m = new Map();
+    arr.forEach(p=>{ const k=p[key]; if(!k) return; m.set(k,(m.get(k)||0)+1); });
+    return [...m.entries()].map(([k,n])=>({k,n}));
+  }
+  function buildFilters(){
+    const all = shopState.all;
+    fillSelect('fCat',   tally(all,'category').sort((a,b)=>a.k.localeCompare(b.k)));
+    fillSelect('fBrand', tally(all,'vendor').sort((a,b)=>a.k.localeCompare(b.k, undefined, {sensitivity:'base'})));
+    fillSelect('fSize',  tally(all,'size').sort((a,b)=>sizeRank(a.k)-sizeRank(b.k) || a.k.localeCompare(b.k)));
+  }
+  ['fCat','fBrand','fSize','fSort'].forEach(id=>document.getElementById(id).addEventListener('change', applyFilters));
+  function clearFilters(){
+    ['fCat','fBrand','fSize'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fSort').value='featured';
+    applyFilters();
+  }
+
+  function applyFilters(){
+    const cat = document.getElementById('fCat').value,
+          br  = document.getElementById('fBrand').value,
+          sz  = document.getElementById('fSize').value,
+          sort= document.getElementById('fSort').value;
+    let v = shopState.all.filter(p => (!cat||p.category===cat) && (!br||p.vendor===br) && (!sz||p.size===sz));
+    const by = {
+      featured:(a,b)=>a.idx-b.idx,
+      new:(a,b)=>b.created-a.created || a.idx-b.idx,
+      asc:(a,b)=>a.price-b.price || a.idx-b.idx,
+      desc:(a,b)=>b.price-a.price || a.idx-b.idx,
+      deals:(a,b)=>disc(b)-disc(a) || a.idx-b.idx
+    }[sort] || ((a,b)=>a.idx-b.idx);
+    v.sort(by);
+    shopState.view = v; shopState.shown = 0;
+    document.getElementById('shopGrid').innerHTML = '';
+    const sold = shopState.all.filter(p=>p.sold).length;
+    if(!v.length){
+      setNote('<b>Nothing here yet.</b> &nbsp;No pieces match those filters — try clearing one.');
+    }else{
+      const filtered = v.length!==shopState.all.length;
+      setNote(`${v.length} ${filtered?'matching ':''}piece${v.length===1?'':'s'}${filtered?'':` in the closet${sold?` · ${sold} sold`:''}`}`, true);
+    }
+    renderMore();
+  }
+
+  function card(p){
+    const imgs = p.images.length ? p.images : [null];
+    const slides = imgs.map((im,i)=> im
+      ? `<div class="slide"><img src="${esc(im.url)}" alt="${esc(im.alt)}" loading="lazy" decoding="async"></div>`
+      : `<div class="slide">No photo yet</div>`).join('');
+    const dots = imgs.length>1 ? `<div class="dots">${imgs.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div>` : '';
+    const nav  = imgs.length>1 ? `<button class="gnav prev" onclick="slide(this,-1)" aria-label="Previous photo">‹</button><button class="gnav next" onclick="slide(this,1)" aria-label="Next photo">›</button>` : '';
+    const d = disc(p);
+    const priceHtml = `${money(p.price,p.currency)}${p.compareAt>p.price?`<s>${money(p.compareAt,p.currency)}</s>`:''}`;
+    const details = [p.size?('Size '+p.size):'', p.category].filter(Boolean).join(' · ');
+    const short = p.desc.length>120 ? p.desc.slice(0,117).replace(/\s+\S*$/,'')+'…' : p.desc;
+    return `
+    <article class="item${p.sold?' sold':''}" data-handle="${esc(p.handle)}">
+      <div class="gallery">
+        ${p.sold?'<span class="badge sold">Sold</span>':''}
+        ${(!p.sold && d>0)?`<span class="badge deal">${Math.round(d*100)}% off</span>`:''}
+        <div class="track">${slides}</div>
+        ${nav}${dots}
+      </div>
+      <div class="info">
+        ${p.vendor?`<div class="br">${esc(p.vendor)}</div>`:''}
+        <div class="nm">${esc(p.title)}</div>
+        <div class="pr">${priceHtml}</div>
+        ${short?`<div class="ds">${esc(short)}</div>`:''}
+        <div class="meas"><span>Details</span>${esc(details||'—')}</div>
+        <button class="cta sm add" ${p.sold||!p.variantId?'disabled':''} onclick="addToCart('${esc(p.variantId)}', this)">${p.sold?'Sold':'Add to cart'}</button>
+      </div>
+    </article>`;
+  }
+
+  function renderMore(){
+    const {view, shown, PAGE} = shopState;
+    const next = view.slice(shown, shown+PAGE);
+    if(next.length){
+      document.getElementById('shopGrid').insertAdjacentHTML('beforeend', next.map(card).join(''));
+      shopState.shown += next.length;
+    }
+    document.getElementById('moreWrap').hidden = shopState.shown >= view.length;
+  }
+  // lazy render: 24 cards at a time as the sentinel scrolls into view
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting) && shopState.loaded && shopState.shown<shopState.view.length) renderMore(); },{rootMargin:'600px 0px'})
+      .observe(document.getElementById('sentinel'));
+  }
+
+  /* gallery scroll + dot sync (delegated, cards render lazily) */
+  function slide(btn,dir){
+    const track = btn.parentElement.querySelector('.track');
+    track.scrollBy({left:dir*track.clientWidth,behavior:'smooth'});
+  }
+  document.getElementById('shopGrid').addEventListener('scroll', e=>{
+    const track = e.target; if(!track.classList || !track.classList.contains('track')) return;
+    const idx = Math.round(track.scrollLeft/track.clientWidth);
+    track.parentElement.querySelectorAll('.dots i').forEach((d,i)=>d.classList.toggle('on',i===idx));
+  }, true);
+
+  /* ---- cart (Shopify Cart API; id persisted in localStorage) ---- */
+  const CART_KEY = 'jonesie_cart_id';
+  const CART_FIELDS = `id checkoutUrl totalQuantity
+    cost{subtotalAmount{amount currencyCode}}
+    lines(first:100){nodes{id quantity
+      merchandise{... on ProductVariant{id title price{amount currencyCode}
+        product{title handle featuredImage{url(transform:{maxWidth:200,maxHeight:200})}}}}}}`;
+  let cart = null;
+  function cartId(){ try{ return localStorage.getItem(CART_KEY); }catch(e){ return null; } }
+  function setCart(c){
+    cart = c;
+    try{ c ? localStorage.setItem(CART_KEY, c.id) : localStorage.removeItem(CART_KEY); }catch(e){}
+    renderCart();
+  }
+  async function loadCart(){
+    const id = cartId(); if(!id) return renderCart();
+    try{
+      const d = await gql(`query($id:ID!){cart(id:$id){${CART_FIELDS}}}`,{id});
+      setCart(d.cart || null);                       // null = cart expired / completed → start fresh
+    }catch(e){ console.warn('[jonesie] cart load', e); renderCart(); }
+  }
+  function userErr(res){ const u=(res&&res.userErrors)||[]; if(u.length) throw new Error(u.map(x=>x.message).join('; ')); }
+  async function addToCart(variantId, btn){
+    if(!variantId) return;
+    const label = btn ? btn.textContent : '';
+    if(btn){ btn.disabled = true; btn.textContent = 'Adding…'; }
+    try{
+      let d;
+      if(cart && cart.id){
+        d = await gql(`mutation($cartId:ID!,$lines:[CartLineInput!]!){cartLinesAdd(cartId:$cartId,lines:$lines){cart{${CART_FIELDS}} userErrors{field message}}}`,
+                      {cartId:cart.id, lines:[{merchandiseId:variantId, quantity:1}]});
+        userErr(d.cartLinesAdd); setCart(d.cartLinesAdd.cart);
+      }else{
+        d = await gql(`mutation($lines:[CartLineInput!]!){cartCreate(input:{lines:$lines}){cart{${CART_FIELDS}} userErrors{field message}}}`,
+                      {lines:[{merchandiseId:variantId, quantity:1}]});
+        userErr(d.cartCreate); setCart(d.cartCreate.cart);
+      }
+      toast('Added to your cart'); openCart();
+    }catch(e){
+      console.error('[jonesie] add to cart', e);
+      if(/not exist|invalid|does not/i.test(e.message)){ setCart(null); return addToCart(variantId, btn); } // stale cart id → recreate once
+      toast('Couldn\'t add that — '+e.message);
+    }finally{ if(btn){ btn.disabled = false; btn.textContent = label; } }
+  }
+  async function removeLine(lineId){
+    if(!cart) return;
+    try{
+      const d = await gql(`mutation($cartId:ID!,$lineIds:[ID!]!){cartLinesRemove(cartId:$cartId,lineIds:$lineIds){cart{${CART_FIELDS}} userErrors{field message}}}`,
+                          {cartId:cart.id, lineIds:[lineId]});
+      userErr(d.cartLinesRemove); setCart(d.cartLinesRemove.cart);
+    }catch(e){ console.error('[jonesie] remove', e); toast('Couldn\'t remove that — '+e.message); }
+  }
+  function renderCart(){
+    const lines = (cart && cart.lines.nodes) || [];
+    const qty = cart ? cart.totalQuantity : 0;
+    document.getElementById('cartCount').textContent = qty ? String(qty) : '';
+    const box = document.getElementById('cartLines');
+    if(!lines.length){
+      box.innerHTML = `<div class="empty">
+        <svg viewBox="0 0 100 100"><path d="M50 80 C24 61 14 46 14 32 A17 17 0 0 1 50 25 A17 17 0 0 1 86 32 C86 46 76 61 50 80 Z" fill="none" stroke="#8f8d8d" stroke-width="2.6"/><circle cx="41" cy="40" r="2.6" fill="#8f8d8d"/><circle cx="59" cy="40" r="2.6" fill="#8f8d8d"/><path d="M43 52 Q50 48 57 52" fill="none" stroke="#8f8d8d" stroke-width="2.2" stroke-linecap="round"/></svg>
+        Your cart is empty — jonesie's waiting.</div>`;
+    }else{
+      box.innerHTML = lines.map(l=>{
+        const m = l.merchandise, img = m.product.featuredImage ? `<img src="${esc(m.product.featuredImage.url)}" alt="">` : `<img alt="">`;
+        const variant = (m.title && m.title!=='Default Title') ? `<div class="lv">${esc(m.title)}</div>` : '';
+        return `<div class="line">${img}<div class="ln"><div class="lt">${esc(m.product.title)}</div>${variant}
+          <div class="lp">${money(m.price.amount,m.price.currencyCode)}${l.quantity>1?` × ${l.quantity}`:''}</div>
+          <button class="rm" onclick="removeLine('${esc(l.id)}')">Remove</button></div></div>`;
+      }).join('');
+    }
+    document.getElementById('cartSubtotal').textContent = cart ? money(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode) : '$0';
+    document.getElementById('checkoutBtn').disabled = !lines.length;
+  }
+  function checkout(){ if(cart && cart.checkoutUrl) window.location.href = cart.checkoutUrl; }
+  function openCart(){ document.getElementById('drawer').classList.add('on'); document.getElementById('scrim').classList.add('on'); document.getElementById('drawer').setAttribute('aria-hidden','false'); }
+  function closeCart(){ document.getElementById('drawer').classList.remove('on'); document.getElementById('scrim').classList.remove('on'); document.getElementById('drawer').setAttribute('aria-hidden','true'); }
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeCart(); });
+  let toastT; function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2600); }
+
+  /* ---- boot ---- */
+  loadCart();
+  if(location.hash==='#shop') go('shop'); else loadShop();   // warm the catalog in the background
+
+  /* ---- FAQ ---- */
+  const faqs = [
+    {q:'How long does shipping take?', a:'Orders ship within 2–3 business days. Domestic delivery usually lands in 3–6 business days after that. You\'ll get a tracking number as soon as it\'s on its way.'},
+    {q:'What shipping methods do you use?', a:'Most items go USPS Ground Advantage or Priority Mail depending on size and weight. Larger or fragile pieces ship UPS, packed extra carefully.'},
+    {q:'Do you offer returns?', a:'Because each piece is one-of-a-kind and described in detail, sales are generally final. If something arrives damaged or not as described, reach out within 5 days and we\'ll make it right.'},
+    {q:'Are the measurements accurate?', a:'Yes — every listing includes hand-measured dimensions and honest condition notes, plus eight photos so you can see every angle before you buy.'},
+    {q:'Do you ship internationally?', a:'Not at the moment, but it\'s on the list. If you\'re outside the US and really want a piece, send a message and we\'ll see what\'s possible.'},
+    {q:'How do I pay?', a:'Checkout runs securely through Shopify, which accepts all major cards, Apple Pay, Google Pay, and Shop Pay.'},
+    {q:'Can you hold an item for me?', a:'Short holds are sometimes possible — just ask. Items aren\'t reserved until paid for, since everything is one-of-a-kind.'}
+  ];
+  document.getElementById('faqList').innerHTML = faqs.map(f=>`
+    <div class="faq">
+      <button onclick="this.parentElement.classList.toggle('open')">
+        <span>${f.q}</span><span class="plus">+</span>
+      </button>
+      <div class="ans">${f.a}</div>
+    </div>`).join('');
+</script>
+</body>
+</html>
